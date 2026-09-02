@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraTeach AI — Human-Like Adaptive Video Classroom</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/avatar.css">
+</head>
+<body>
+
+  <!-- Top Glassmorphic Navigation Bar -->
+  <nav class="navbar">
+    <div class="brand">
+      <span>🎓 AuraTeach AI</span>
+      <span class="brand-badge">Adaptive Video Educator</span>
+    </div>
+
+    <div class="nav-controls">
+      <div class="nav-tabs">
+        <button class="nav-tab-btn active" data-view="setup">⚡ Lesson Planner</button>
+        <button class="nav-tab-btn" data-view="classroom">🎥 AI Classroom</button>
+        <button class="nav-tab-btn" data-view="roadmap">🗺️ 7-Day Roadmap</button>
+        <button class="nav-tab-btn" data-view="profile">👤 Student Profile</button>
+      </div>
+
+      <!-- Language Selector -->
+      <select id="nav-lang-select" class="nav-select">
+        <option value="en" selected>🌐 English (US)</option>
+        <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+        <option value="hinglish">🇮🇳 Hinglish (Hindi + English)</option>
+        <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+        <option value="te">🇮🇳 Telugu (తెలుగు)</option>
+        <option value="es">🇪🇸 Spanish (Español)</option>
+        <option value="fr">🇫🇷 French (Français)</option>
+        <option value="de">🇩🇪 German (Deutsch)</option>
+      </select>
+    </div>
+  </nav>
+
+  <!-- Main View Containers -->
+  <main class="main-container">
+
+    <!-- ==================== VIEW 1: SETUP & INGESTION ==================== -->
+    <section id="view-setup" class="view-section active">
+      <div class="setup-grid">
+        
+        <!-- Left Card: Topic & Material Input -->
+        <div class="setup-card">
+          <div class="setup-card-title">
+            <span>📚 What would you like to learn today?</span>
+          </div>
+          <p class="setup-card-desc">
+            Enter any topic directly or upload educational documents (PDF, DOCX, PPTX, Notes, Research Papers) for strict grounded RAG teaching.
+          </p>
+
+          <div class="form-group">
+            <label class="form-label">Topic or Chapter Name</label>
+            <input type="text" id="setup-topic-input" class="form-input" placeholder="e.g. Electric Circuits & Ohm's Law, Machine Learning, Python Recursion..." value="Electric Circuits and Ohm's Law">
+          </div>
+
+          <!-- Document Upload Dropzone -->
+          <div class="form-group">
+            <label class="form-label">Upload Learning Material (RAG Grounding)</label>
+            <div id="document-dropzone" class="dropzone">
+              <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">📄</div>
+              <div style="font-weight: 600; color: #38bdf8; font-size: 0.95rem;">Drag & drop PDF, DOCX, PPTX, TXT</div>
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.25rem;">Extracts formulas, concepts & prevents hallucinations</div>
+              <input type="file" id="file-upload-input" style="display: none;" accept=".pdf,.docx,.doc,.pptx,.ppt,.txt,.md">
+            </div>
+            <div id="upload-status-box" style="margin-top: 0.75rem; display: none;"></div>
+          </div>
+
+          <!-- Built-in Quick Samples -->
+          <div class="form-group">
+            <label class="form-label">Or Click a Pre-Loaded Textbook Chapter:</label>
+            <div id="sample-materials-list" class="pill-group">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Special Instructions for AI Teacher</label>
+            <textarea id="setup-custom-prompt" class="form-textarea" rows="2" placeholder="e.g. 'Explain in simple Hindi with everyday analogies and test me at the end.'"></textarea>
+          </div>
+        </div>
+
+        <!-- Right Card: Pedagogical Customization & Persona -->
+        <div class="setup-card">
+          <div class="setup-card-title">
+            <span>⚙️ Personalize Your Teaching Experience</span>
+          </div>
+          <p class="setup-card-desc">
+            Customize the teacher persona, depth of mathematical rigor, and available learning timeframe.
+          </p>
+
+          <!-- Learner Level -->
+          <div class="form-group">
+            <label class="form-label">Learner Knowledge Level</label>
+            <div class="pill-group">
+              <button class="pill-btn level-pill active" data-level="beginner">🌱 Beginner (Analogies & Intuition)</button>
+              <button class="pill-btn level-pill" data-level="intermediate">🚀 Intermediate (Practical & Code)</button>
+              <button class="pill-btn level-pill" data-level="advanced">🔬 Advanced (Derivations & Architecture)</button>
+            </div>
+          </div>
+
+          <!-- Session Duration -->
+          <div class="form-group">
+            <label class="form-label">Available Learning Time</label>
+            <div class="pill-group">
+              <button class="pill-btn duration-pill" data-duration="5">⚡ 5 Min (Sprint)</button>
+              <button class="pill-btn duration-pill active" data-duration="20">⏱ 20 Min (Standard Lesson)</button>
+              <button class="pill-btn duration-pill" data-duration="60">🎓 60 Min (Masterclass)</button>
+            </div>
+          </div>
+
+          <!-- Teacher Personality Selector -->
+          <div class="form-group">
+            <label class="form-label">Select Your AI Teacher Persona</label>
+            <div class="teacher-selector-grid">
+              
+              <div class="teacher-card-option active" data-teacher="sarah">
+                <div class="teacher-avatar-mini" style="color: #8b5cf6;">SM</div>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.9rem; color: #f8fafc;">Prof. Sarah</div>
+                  <div style="font-size: 0.75rem; color: #94a3b8;">Socratic & Intuitive</div>
+                </div>
+              </div>
+
+              <div class="teacher-card-option" data-teacher="vikram">
+                <div class="teacher-avatar-mini" style="color: #10b981;">VJ</div>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.9rem; color: #f8fafc;">Dr. Vikram</div>
+                  <div style="font-size: 0.75rem; color: #94a3b8;">Practical & Tech-Focused</div>
+                </div>
+              </div>
+
+              <div class="teacher-card-option" data-teacher="priya">
+                <div class="teacher-avatar-mini" style="color: #ec4899;">PS</div>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.9rem; color: #f8fafc;">Priya Sharma</div>
+                  <div style="font-size: 0.75rem; color: #94a3b8;">Visual & Energetic</div>
+                </div>
+              </div>
+
+              <div class="teacher-card-option" data-teacher="chen">
+                <div class="teacher-avatar-mini" style="color: #6366f1;">MC</div>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.9rem; color: #f8fafc;">Master Chen</div>
+                  <div style="font-size: 0.75rem; color: #94a3b8;">Deep Foundational</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Launch Actions -->
+          <div style="display: flex; gap: 0.75rem; margin-top: 2rem;">
+            <button id="start-lesson-btn" class="btn-primary" style="flex: 1.5;">
+              <span>🚀 Launch AI Video Classroom</span>
+            </button>
+            <button id="generate-roadmap-btn" class="pill-btn" style="flex: 1; border-color: var(--accent-indigo); color: #c7d2fe; font-weight: 600;">
+              🗺️ 7-Day Plan
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: AI VIDEO CLASSROOM ==================== -->
+    <section id="view-classroom" class="view-section">
+      <div class="classroom-grid">
+        
+        <!-- Left: Split Video Stage (Avatar + Visualizer) & Player Controls -->
+        <div class="video-stage-card">
+          <div class="stage-header">
+            <div>
+              <span id="stage-lesson-title" style="font-weight: 700; font-size: 1.1rem; color: #f8fafc;">
+                Electric Circuits and Ohm's Law
+              </span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span id="stage-lesson-badge" class="lesson-badge">BEGINNER &bull; 20 MIN</span>
+            </div>
+          </div>
+
+          <!-- Presentation Canvas (Avatar + Subject Visualizer) -->
+          <div class="stage-presentation-area">
+            <!-- Left Pane: 2.5D Animated Teacher Avatar -->
+            <div id="avatar-render-container" class="avatar-container">
+              <!-- Rendered by AvatarRenderer -->
+            </div>
+
+            <!-- Right Pane: Dynamic Subject Visualizer -->
+            <div class="visualizer-container">
+              <div class="visualizer-header">
+                <span id="visualizer-title-label">Interactive Subject Demonstration</span>
+                <span style="color: #38bdf8; font-size: 0.75rem;">LIVE CANVAS</span>
+              </div>
+              <div id="visualizer-mount-point" class="visualizer-body">
+                <!-- Mounted by Subject-Aware Visualizers -->
+              </div>
+            </div>
+
+            <!-- Synchronized Live Subtitles -->
+            <div id="stage-subtitles-text" class="subtitles-overlay">
+              Welcome to the lesson! Let's explore the fundamental principles together.
+            </div>
+          </div>
+
+          <!-- Video Controls Bar -->
+          <div class="video-controls-bar">
+            <div class="timeline-slider-container">
+              <span id="video-time-label" style="font-size: 0.8rem; color: #94a3b8; font-weight: 600;">Segment 1 of 5</span>
+              <div class="progress-track">
+                <div id="video-progress-fill" class="progress-fill"></div>
+              </div>
+            </div>
+
+            <div class="controls-row">
+              <div class="control-btns">
+                <button id="video-prev-btn" class="ctrl-btn" title="Previous Segment">⏮</button>
+                <button id="video-play-btn" class="ctrl-btn play-btn" title="Play / Pause">▶</button>
+                <button id="video-next-btn" class="ctrl-btn" title="Next Segment">⏭</button>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-size: 0.8rem; color: #94a3b8;">Speed:</span>
+                <select id="video-speed-select" class="nav-select" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+                  <option value="1.0" selected>1.0x</option>
+                  <option value="1.25">1.25x</option>
+                  <option value="1.5">1.5x</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Blackboard Notes & Real-Time Student Interaction Terminal -->
+        <div class="interaction-side-card">
+          <div class="tab-nav-inner">
+            <button class="tab-btn-inner active" data-target="tab-blackboard">📋 Blackboard Notes</button>
+            <button class="tab-btn-inner" data-target="tab-ask-teacher">💬 Ask Teacher</button>
+          </div>
+
+          <!-- Tab 1: Blackboard Notes -->
+          <div id="tab-blackboard" class="tab-content-pane active">
+            <div id="blackboard-content-mount" style="flex: 1;">
+              <!-- Dynamic Notes -->
+            </div>
+          </div>
+
+          <!-- Tab 2: Ask Teacher Mid-Lecture Q&A -->
+          <div id="tab-ask-teacher" class="tab-content-pane">
+            <div id="qa-chat-thread" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; margin-bottom: 0.75rem;">
+              <div style="background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(56, 189, 248, 0.3); padding: 0.6rem 0.85rem; border-radius: 0.75rem; font-size: 0.85rem; margin-bottom: 0.6rem;">
+                <span style="font-size: 0.7rem; font-weight: 700; color: #38bdf8; display: block; margin-bottom: 0.2rem;">🎓 AI Teacher</span>
+                <span>Pause the video anytime if you have questions! You can type or use your microphone to ask.</span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="qa-question-input" class="form-input" placeholder="Ask a clarifying question..." style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+              <button id="qa-mic-btn" class="ctrl-btn" title="Voice Input" style="border-radius: 0.5rem; width: 38px; height: 38px;">🎤</button>
+              <button id="qa-send-btn" class="btn-primary" style="width: auto; padding: 0.5rem 1rem; font-size: 0.85rem;">Send</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: ASSESSMENT & REPORT ==================== -->
+    <section id="view-assessment" class="view-section">
+      <!-- Rendered dynamically by AssessmentViewController -->
+    </section>
+
+    <!-- ==================== VIEW 4: STUDENT PROFILE ==================== -->
+    <section id="view-profile" class="view-section">
+      <!-- Rendered dynamically by StudentProfileController -->
+    </section>
+
+    <!-- ==================== VIEW 5: 7-DAY ROADMAP ==================== -->
+    <section id="view-roadmap" class="view-section">
+      <!-- Rendered dynamically by LearningPathController -->
+    </section>
+
+  </main>
+
+  <!-- ==================== CHECKPOINT QUESTION MODAL ==================== -->
+  <div id="checkpoint-modal-overlay" class="checkpoint-modal-overlay" style="display: none;">
+    <div id="checkpoint-modal-container" class="checkpoint-modal">
+      <!-- Injected by StudentInteractionController -->
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/avatar_renderer.js"></script>
+  <script src="js/visualizers/physics_visualizer.js"></script>
+  <script src="js/visualizers/math_visualizer.js"></script>
+  <script src="js/visualizers/code_visualizer.js"></script>
+  <script src="js/visualizers/bio_visualizer.js"></script>
+  <script src="js/visualizers/history_visualizer.js"></script>
+  <script src="js/visualizers/diagram_visualizer.js"></script>
+  <script src="js/video_player.js"></script>
+  <script src="js/student_interaction.js"></script>
+  <script src="js/assessment_view.js"></script>
+  <script src="js/student_profile.js"></script>
+  <script src="js/learning_path.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
